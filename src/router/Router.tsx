@@ -1,12 +1,13 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import pages from '@pages/pages';
 
-const Router: React.FC = () => {
-  return (
-    <Routes>
-      <Route path='/login' />
-    </Routes>
-  );
-};
+const Router = () => (
+  <Routes>
+    <Route path='/'>
+      <Route index element={<pages.Index />} />
+      <Route path='auth' element={<pages.Auth.Index />} />
+    </Route>
+  </Routes>
+);
 
 export default Router;
