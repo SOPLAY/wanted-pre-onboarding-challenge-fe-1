@@ -1,23 +1,38 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from "axios";
 
-const apiServerUrl = 'http://localhost:8080';
+const apiServerUrl = "http://localhost:8080";
 
 export type IAuthLogin = { email: string; password: string };
-export type IAuthSign = IAuthLogin;
+export type IAuthSignUp = IAuthLogin;
 
-//promise를 반환
+type IResAuth = { message: string; token: string };
+
+//api auth
+const login = (data: IAuthLogin): Promise<AxiosResponse<IResAuth>> =>
+  axios.post(`${apiServerUrl}/user/login`, data);
+
+const signUp = (data: IAuthSignUp): Promise<AxiosResponse<IResAuth>> =>
+  axios.post(`${apiServerUrl}/user/create`, data);
+
+// api todos
+
+const getTodos = () => {};
+const getTodosById = () => {};
+const createTodo = () => {};
+const updateTodo = () => {};
+const deleteTodo = () => {};
+
 const apis = {
   auth: {
-    login: (data: IAuthLogin) => axios.post(`${apiServerUrl}/user/login`, data),
-    signUp: (data: IAuthSign) =>
-      axios.post(`${apiServerUrl}/user/create`, data),
+    login,
+    signUp,
   },
   todos: {
-    getTodos: () => {},
-    getTodosById: () => {},
-    createTodo: () => {},
-    updateTodo: () => {},
-    deleteTodo: () => {},
+    getTodos,
+    getTodosById,
+    createTodo,
+    updateTodo,
+    deleteTodo,
   },
 };
 
