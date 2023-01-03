@@ -1,10 +1,11 @@
-import RootIndex from './Index';
-import Auth_Index from './auth/Index';
-
+import RootIndex from "./Index";
+import SignIn from "./auth/SignIn";
+import SignUp from "./auth/SignUp";
 const index = {
   Index: RootIndex,
   Auth: {
-    Index: Auth_Index,
+    SignIn,
+    SignUp,
   },
 };
 
