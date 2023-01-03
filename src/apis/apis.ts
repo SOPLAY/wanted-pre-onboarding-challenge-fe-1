@@ -8,12 +8,11 @@ export type IAuthSignUp = IAuthLogin;
 type IResAuth = { message: string; token: string };
 
 //api auth
-const login = (data: IAuthLogin): Promise<AxiosResponse<IResAuth>> =>
-  axios.post(`${apiServerUrl}/user/login`, data);
+const signIn = (data: IAuthLogin): Promise<AxiosResponse<IResAuth>> =>
+  axios.post(`${apiServerUrl}/users/login`, data);
 
 const signUp = (data: IAuthSignUp): Promise<AxiosResponse<IResAuth>> =>
-  axios.post(`${apiServerUrl}/user/create`, data);
-
+  axios.post(`${apiServerUrl}/users/create`, data);
 // api todos
 
 const getTodos = () => {};
@@ -24,7 +23,7 @@ const deleteTodo = () => {};
 
 const apis = {
   auth: {
-    login,
+    signIn,
     signUp,
   },
   todos: {
