@@ -1,9 +1,10 @@
-type IInput = {
+type IInput = React.DOMAttributes<HTMLInputElement> & {
   placeholder?: string;
   type?: "text" | "password" | "tel" | "text" | "email";
   pattern?: string;
   state?: boolean;
   stateMessage?: string;
+  name?: string;
 };
 
 type IStateMessage = {
@@ -13,14 +14,14 @@ type IStateMessage = {
 };
 
 const Style = {
-  Input: (data: IInput) => (
+  Input: ({ state, ...props }: IInput) => (
     <input
       className={`
-        h-10 px-2 py-1 text-sm border border-gray-200 rounded-md placeholder:text-sm w-96 focus:outline-blue-600
-        ${data.type === "password" && "text-xl placeholder:text-xl"} 
-        ${!data.state && "bg-red-500/30 border-red-500"}
+        text-black h-10 px-2 py-1 text-sm border border-gray-200 rounded-md placeholder:text-sm w-96 focus:outline-blue-600
+        ${props.type === "password" && "text-xl placeholder:text-xl"} 
+        ${!state && "bg-red-500/30 border-red-500"}
       `}
-      {...data}
+      {...props}
     />
   ),
   StateMessage: (data: IStateMessage) => (
@@ -41,6 +42,7 @@ const Input = ({
   pattern = "",
   state = true,
   stateMessage = "",
+  ...props
 }: IInput) => (
   <>
     <Style.Input
@@ -48,6 +50,7 @@ const Input = ({
       placeholder={placeholder}
       pattern={pattern}
       state={state}
+      {...props}
     />
     <Style.StateMessage state={state}>{stateMessage}</Style.StateMessage>
   </>
