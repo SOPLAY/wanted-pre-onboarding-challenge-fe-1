@@ -1,14 +1,9 @@
-import {
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import pages from "@pages/pages";
 import { useAuth } from "@hooks/useAuth";
 import { useEffect } from "react";
 import Layout from "@components/Layout";
+import axios from "axios";
 
 const Router = () => {
   const auth = useAuth();
@@ -34,6 +29,8 @@ const Router = () => {
     };
     moveToNoLoginUser();
     moveToLoginUser();
+    axios.defaults.headers.common["Authorization"] = auth.user.token;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -44,6 +41,7 @@ const Router = () => {
           <Route path="signin" element={<pages.Auth.SignIn />} />
           <Route path="signup" element={<pages.Auth.SignUp />} />
         </Route>
+        <Route path="todo/:id" element={<pages.Todo.Details />} />
       </Route>
       <Route path="*" />
     </Routes>

@@ -9,22 +9,24 @@ const Header = () => {
         <p className="text-xl text-justify ">
           <b>ToDo</b>
         </p>
-        <ul className="flex gap-2 text-sm">
-          {auth.user.state ? (
-            <li className="cursor-pointer" onClick={() => auth.logOut()}>
-              LotOut
-            </li>
-          ) : (
-            <>
-              <li>
-                <Link to={"/auth/signin"}>SignIn</Link>
+        <nav>
+          <ul className="flex gap-2 text-sm">
+            {auth.user.state ? (
+              <li className="cursor-pointer" onClick={() => auth.logOut()}>
+                LotOut
               </li>
-              <li>
-                <Link to={"/auth/signup"}>SignUp</Link>
-              </li>
-            </>
-          )}
-        </ul>
+            ) : (
+              <>
+                <li>
+                  <Link to={"/auth/signin"}>SignIn</Link>
+                </li>
+                <li>
+                  <Link to={"/auth/signup"}>SignUp</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </nav>
       </div>
     </header>
   );
