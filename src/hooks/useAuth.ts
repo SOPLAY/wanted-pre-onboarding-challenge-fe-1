@@ -1,24 +1,41 @@
+import { useNavigate } from "react-router-dom";
 import apis, { IAuthLogin, IAuthSignUp } from "../apis/apis";
 import { atom, useRecoilState } from "recoil";
 
 type IUserToken = { state: boolean; token: string };
 
+const initData = JSON.parse(
+  localStorage.getItem("userAuthData") || `{"state":false,"token":""}`
+) as IUserToken;
+
 export const atomAuthState = atom<IUserToken>({
-  key: "authState",
-  default: { state: false, token: "" },
+  key: `authState${new Date()}`,
+  default: initData,
 });
 
 export const useAuth = () => {
-  const [user, setUser] = useRecoilState(atomAuthState);
+  const navigate = useNavigate();
+  const [user, setUserAtom] = useRecoilState(atomAuthState);
 
+  const setUser = (data: IUserToken) => {
+    localStorage.setItem("userAuthData", JSON.stringify(data));
+    setUserAtom(data);
+  };
+
+  //외부 사용 가능 함수
   const signIn = async (Inputdata: IAuthLogin) =>
-    await apis.auth.signIn(Inputdata).then((res) => {
-      setUser({
-        state: res.data.message === "성공적으로 로그인 했습니다",
-        token: res.data.token,
+    await apis.auth
+      .signIn(Inputdata)
+      .then((res) => {
+        setUser({
+          state: res.data.message === "성공적으로 로그인 했습니다",
+          token: res.data.token,
+        });
+        navigate("/");
+      })
+      .catch((e) => {
+        alert("로그인에 실패했습니다.");
       });
-      return res.data.message;
-    });
 
   const signUp = async (Inputdata: IAuthSignUp) =>
     await apis.auth.signUp(Inputdata).then((res) => {
@@ -29,5 +46,10 @@ export const useAuth = () => {
       return res.data.message;
     });
 
-  return { user, signIn, signUp };
+  const logOut = () => {
+    setUser({ state: false, token: "" });
+    navigate("/auth/signIn");
+  };
+
+  return { user, signIn, signUp, logOut };
 };
