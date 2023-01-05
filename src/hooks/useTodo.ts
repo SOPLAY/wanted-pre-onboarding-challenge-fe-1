@@ -1,27 +1,31 @@
 import apis, { ITodo } from "@src/apis/apis";
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
+import { atom, useRecoilState } from "recoil";
 
-type ITodoItem = {
+export type ITodoItem = {
   title: string;
   content: string;
   id: string;
   createdAt: string;
   updatedAt: string;
 };
+const initailTodsState = [
+  { title: "", content: "", id: "", createdAt: "", updatedAt: "" },
+];
+const todosAtom = atom({
+  key: `todosAtom${new Date().toLocaleTimeString()}`,
+  default: initailTodsState,
+});
 
-export const useTodos = () => {
+export const useTodo = () => {
   const auth = useAuth();
   useEffect(() => {
     auth.setToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initailTodsState = [
-    { title: "", content: "", id: "", createdAt: "", updatedAt: "" },
-  ];
-
-  const [todos, setTodos] = useState<ITodoItem[]>(initailTodsState);
+  const [todos, setTodos] = useRecoilState<ITodoItem[]>(todosAtom);
 
   const getTodos = () => {
     apis.todos.getTodos().then((res) => setTodos(res.data.data));
@@ -56,6 +60,7 @@ export const useTodos = () => {
     apis.todos
       .deleteTodo(id)
       .then(() => {
+        getTodos();
         alert("성공적으로 삭제 되었습니다!");
       })
       .catch((e) => {
