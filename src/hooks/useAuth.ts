@@ -34,17 +34,22 @@ export const useAuth = () => {
         navigate("/");
       })
       .catch((e) => {
-        alert("로그인에 실패했습니다.");
+        alert(e.response.data.details);
       });
 
   const signUp = async (Inputdata: IAuthSignUp) =>
-    await apis.auth.signUp(Inputdata).then((res) => {
-      setUser({
-        state: res.data.message === "계정이 성공적으로 생성되었습니다",
-        token: res.data.token,
+    await apis.auth
+      .signUp(Inputdata)
+      .then((res) => {
+        setUser({
+          state: res.data.message === "계정이 성공적으로 생성되었습니다",
+          token: res.data.token,
+        });
+        return res.data.message;
+      })
+      .catch((e) => {
+        alert(e.response.data.details);
       });
-      return res.data.message;
-    });
 
   const logOut = () => {
     setUser({ state: false, token: "" });
