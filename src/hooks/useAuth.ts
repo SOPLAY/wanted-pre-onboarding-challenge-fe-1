@@ -45,7 +45,8 @@ export const useAuth = () => {
           state: res.data.message === "계정이 성공적으로 생성되었습니다",
           token: res.data.token,
         });
-        return res.data.message;
+        alert("회원가입에 성공했습니다.!!");
+        navigate("/");
       })
       .catch((e) => {
         alert(e.response.data.details);
