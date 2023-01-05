@@ -1,3 +1,5 @@
+import React from "react";
+
 type IInput = React.DOMAttributes<HTMLInputElement> & {
   placeholder?: string;
   type?: "text" | "password" | "tel" | "text" | "email";
@@ -7,53 +9,31 @@ type IInput = React.DOMAttributes<HTMLInputElement> & {
   name?: string;
 };
 
-type IStateMessage = {
-  state: boolean;
-
-  children: any;
-};
-
-const Style = {
-  Input: ({ state, ...props }: IInput) => (
-    <input
-      className={`
-        text-black h-10 px-2 py-1 text-sm border border-gray-200 rounded-md placeholder:text-sm w-96 focus:outline-blue-600
-        ${props.type === "password" && "text-xl placeholder:text-xl"} 
-        ${!state && "bg-red-500/30 border-red-500"}
-      `}
-      {...props}
-    />
-  ),
-  StateMessage: (data: IStateMessage) => (
-    <p
-      className={`
-        pt-1 text-xs text-red-500 duration-500
-        ${data.state && "opacity-0 -translate-y-1"}
-      `}
-    >
-      {data.children}
-    </p>
-  ),
-};
-
 const Input = ({
-  placeholder = "",
   type = "text",
-  pattern = "",
   state = true,
   stateMessage = "",
   ...props
 }: IInput) => (
-  <>
-    <Style.Input
+  <div>
+    <input
       type={type}
-      placeholder={placeholder}
-      pattern={pattern}
-      state={state}
+      className={`
+        text-black h-10 px-2 py-1 text-sm border border-gray-200 rounded-md placeholder:text-sm w-full focus:outline-blue-600
+        ${type === "password" && "text-xl placeholder:text-xl"} 
+        ${!state && "bg-red-500/30 border-red-500"}
+      `}
       {...props}
     />
-    <Style.StateMessage state={state}>{stateMessage}</Style.StateMessage>
-  </>
+    <p
+      className={`
+        pt-1 text-xs text-red-500 duration-500
+        ${state && "opacity-0 -translate-y-1"}
+      `}
+    >
+      {stateMessage}
+    </p>
+  </div>
 );
 
-export default Input;
+export default React.memo(Input);
