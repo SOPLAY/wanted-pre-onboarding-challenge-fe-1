@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import apis, { IAuthLogin, IAuthSignUp } from "../apis/apis";
 import { atom, useRecoilState } from "recoil";
+import axios from "axios";
 
 type IUserToken = { state: boolean; token: string };
 
@@ -31,6 +32,7 @@ export const useAuth = () => {
           state: res.data.message === "성공적으로 로그인 했습니다",
           token: res.data.token,
         });
+        axios.defaults.headers.common["Authorization"] = res.data.token;
         navigate("/");
       })
       .catch((e) => {
@@ -45,6 +47,7 @@ export const useAuth = () => {
           state: res.data.message === "계정이 성공적으로 생성되었습니다",
           token: res.data.token,
         });
+        axios.defaults.headers.common["Authorization"] = res.data.token;
         alert("회원가입에 성공했습니다.!!");
         navigate("/");
       })
@@ -57,5 +60,9 @@ export const useAuth = () => {
     navigate("/auth/signIn");
   };
 
-  return { user, signIn, signUp, logOut };
+  const setToken = () => {
+    axios.defaults.headers.common["Authorization"] = user.token;
+  };
+
+  return { user, signIn, signUp, logOut, setToken };
 };
