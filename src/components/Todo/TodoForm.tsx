@@ -8,8 +8,8 @@ import { MdArrowBack, MdClose, MdModeEditOutline } from "react-icons/md";
 type ITodoFrom = {
   isEidt: boolean;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view">>;
-  editType: string;
+  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
+  editType: "edit" | "view" | "add";
   id: string;
   title: string;
   content: string;
@@ -24,7 +24,7 @@ const TodoForm = ({
   editType,
   setEditType,
 }: ITodoFrom) => {
-  const { updateTodo } = useTodo();
+  const { updateTodo, createTodo, getTodosById } = useTodo();
   const onClose = () => {
     isEidt && setEdit(false);
   };
@@ -35,19 +35,40 @@ const TodoForm = ({
   });
 
   useEffect(() => {
-    setInputData({ title, content });
+    if (editType === "add") {
+      setInputData({ title: "", content: "" });
+    } else {
+      getTodosById(id).then((res) => {
+        setInputData(res);
+      });
+    }
+    // setInputData({ title, content });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEidt]);
+  }, [editType, isEidt]);
 
   const onChange = (e: any) =>
     setInputData({ ...inputData, [e.target.name]: e.target.value });
 
-  const onUpdate = () => {
-    updateTodo(id, inputData)
-      .then(() => {
-        setEditType("view");
-      })
-      .catch((e) => alert(e.response.data.details));
+  const onClick = () => {
+    if (editType === "edit") {
+      updateTodo(id, inputData)
+        .then(() => {
+          setEditType("view");
+        })
+        .catch((e) => alert(e.response.data.details));
+    } else if (editType === "add") {
+      const { title, content } = inputData;
+      !(!title || !content) &&
+        createTodo(inputData)
+          .then(() => {
+            alert("성공적으로 추가되었습니다!");
+            setEditType("view");
+          })
+          .catch((e) => {
+            alert(e.response.data.details);
+          });
+    }
   };
 
   return (
@@ -63,9 +84,9 @@ const TodoForm = ({
         ${isEidt && "translate-x-0 duration-300"}
         `}
       >
-        <div className="flex h-full">
+        <div className="flex h-full ">
           <div className="flex-grow bg-none" onClick={() => onClose()} />
-          <div className="p-5 bg-white shadow-md w-96">
+          <div className="p-5 overflow-auto bg-white shadow-md w-96">
             <div className="flex items-center justify-between text-3xl">
               <MdClose
                 className="duration-300 ease-in-out hover:rotate-90 hover:text-red-600 hover:scale-110"
@@ -77,10 +98,12 @@ const TodoForm = ({
                   onClick={() => setEditType("edit")}
                 />
               ) : (
-                <MdArrowBack
-                  className="text-3xl duration-300 ease-in-out hover:text-red-400 hover:scale-110 "
-                  onClick={() => setEditType("view")}
-                />
+                editType !== "add" && (
+                  <MdArrowBack
+                    className="text-3xl duration-300 ease-in-out hover:text-red-400 hover:scale-110 "
+                    onClick={() => setEditType("view")}
+                  />
+                )
               )}
             </div>
             <div className="mt-5 text-xl font-bold">
@@ -109,14 +132,14 @@ const TodoForm = ({
                 />
               )}
             </div>
-            {editType === "edit" && (
+            {editType !== "view" && (
               <div className="mt-10">
                 <Button
                   onClick={() => {
-                    onUpdate();
+                    onClick();
                   }}
                 >
-                  수정하기
+                  {editType === "edit" ? "수정하기" : "추가하기"}
                 </Button>
               </div>
             )}

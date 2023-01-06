@@ -1,5 +1,5 @@
 import apis, { ITodo } from "@src/apis/apis";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "./useAuth";
 import { atom, useRecoilState } from "recoil";
 
@@ -41,9 +41,9 @@ export const useTodo = () => {
   };
 
   const getTodosById = (id: string) =>
-    apis.todos.getTodos().then((res) => res.data as ITodoItem);
+    apis.todos.getTodosById(id).then((res) => res.data.data as ITodoItem);
 
-  const createTodo = (data: ITodo) => {
+  const createTodo = (data: ITodo) =>
     apis.todos
       .createTodo(data)
       .then((res) => {
@@ -52,7 +52,6 @@ export const useTodo = () => {
       .catch((e) => {
         alert(e.response.data.details);
       });
-  };
 
   const updateTodo = (id: string, data: ITodo) =>
     apis.todos

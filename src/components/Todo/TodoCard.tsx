@@ -5,7 +5,7 @@ import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
 type ITodoCard = ITodoItem & {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setId: React.Dispatch<React.SetStateAction<string>>;
-  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view">>;
+  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
 };
 const TodoCard = ({
   id,
@@ -35,7 +35,7 @@ const TodoCard = ({
     >
       <div className="flex items-center justify-between cursor-pointer">
         <h3 onClick={() => onClickCard()} className={"flex-grow"}>
-          {title.slice(0, 17)}...
+          {title.length > 17 ? `${title.slice(0, 17)}...` : title}
         </h3>
         <span className="flex">
           <MdModeEditOutline
