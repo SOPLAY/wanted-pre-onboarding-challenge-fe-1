@@ -3,7 +3,7 @@ import Header from "./Header";
 
 const Layout = () => {
   return (
-    <div className="flex flex-col h-screen ">
+    <div className="flex flex-col h-screen bg-white">
       <Header />
       <div className="flex-grow ">
         <Outlet />

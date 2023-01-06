@@ -13,7 +13,7 @@ const Header = () => {
           <ul className="flex gap-2 text-sm">
             {auth.user.state ? (
               <li className="cursor-pointer" onClick={() => auth.logOut()}>
-                LotOut
+                LogOut
               </li>
             ) : (
               <>
