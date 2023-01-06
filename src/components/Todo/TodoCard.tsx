@@ -1,7 +1,6 @@
 import { ITodoItem, useTodo } from "@hooks/useTodo";
 import { useRef } from "react";
 import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
-import { useLocation } from "react-router-dom";
 
 type ITodoCard = ITodoItem & {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,8 +8,6 @@ type ITodoCard = ITodoItem & {
   setEditType: React.Dispatch<React.SetStateAction<"edit" | "view">>;
 };
 const TodoCard = ({
-  content,
-  createdAt,
   id,
   title,
   updatedAt,
@@ -18,13 +15,8 @@ const TodoCard = ({
   setEditType,
   setId,
 }: ITodoCard) => {
-  const path = useLocation().pathname.split("/");
-  const targetId = path[path.length - 1];
-
   const cardRef = useRef<HTMLDivElement>(null);
-
   const todo = useTodo();
-
   const date = new Date(updatedAt);
 
   const updateDate = `
@@ -32,14 +24,13 @@ const TodoCard = ({
 
   const onClickCard = (isEdit?: boolean) => {
     setId(id);
-    !isEdit && setEditType("view");
+    !isEdit ? setEditType("view") : setEditType("edit");
     setEdit(true);
   };
 
   return (
     <div
-      className={`z-10 w-full p-3 text-xl duration-300 ease-in-out bg-white border-b hover:bg-green-100
-         ${targetId === id && "bg-green-100"}`}
+      className={`z-10 w-full p-3 text-xl duration-300 ease-in-out  border-b hover:bg-green-100 `}
       ref={cardRef}
     >
       <div className="flex items-center justify-between cursor-pointer">
@@ -48,7 +39,7 @@ const TodoCard = ({
         </h3>
         <span className="flex">
           <MdModeEditOutline
-            onClick={() => onClickCard()}
+            onClick={() => onClickCard(true)}
             className={"mr-1 hover:scale-125 duration-300"}
           />
           <MdDeleteOutline
@@ -61,7 +52,7 @@ const TodoCard = ({
         className="text-xs text-right cursor-pointer text-neutral-700"
         onClick={() => onClickCard()}
       >
-        {updateDate} 에 수정됨{" "}
+        {updateDate} 에 수정됨
       </p>
     </div>
   );

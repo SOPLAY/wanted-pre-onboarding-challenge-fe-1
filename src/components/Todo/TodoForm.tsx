@@ -1,4 +1,8 @@
+import Button from "@components/common/Button";
+import { useTodo } from "@hooks/useTodo";
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { MdArrowBack, MdClose, MdModeEditOutline } from "react-icons/md";
 
 type ITodoFrom = {
@@ -20,8 +24,30 @@ const TodoForm = ({
   editType,
   setEditType,
 }: ITodoFrom) => {
+  const { updateTodo } = useTodo();
   const onClose = () => {
     isEidt && setEdit(false);
+  };
+
+  const [inputData, setInputData] = useState({
+    title: title,
+    content: content,
+  });
+
+  useEffect(() => {
+    setInputData({ title, content });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEidt]);
+
+  const onChange = (e: any) =>
+    setInputData({ ...inputData, [e.target.name]: e.target.value });
+
+  const onUpdate = () => {
+    updateTodo(id, inputData)
+      .then(() => {
+        setEditType("view");
+      })
+      .catch((e) => alert(e.response.data.details));
   };
 
   return (
@@ -57,12 +83,43 @@ const TodoForm = ({
                 />
               )}
             </div>
-            <div className="mt-5">
-              <h1 className="text-2xl font-bold">{title}</h1>
+            <div className="mt-5 text-xl font-bold">
+              {editType === "view" ? (
+                <h1 className="">{title}</h1>
+              ) : (
+                <input
+                  type="text"
+                  className="flex-grow w-full border-2 "
+                  name="title"
+                  value={inputData.title}
+                  onChange={(e) => onChange(e)}
+                />
+              )}
             </div>
-            <div className="mx-3 mt-5 text-gray-700">
-              <p>{content}</p>
+            <div className="mx-3 mt-5 text-gray-700 ">
+              {editType === "view" ? (
+                <p className=" h-96">{content}</p>
+              ) : (
+                <textarea
+                  className="w-full border-2 resize-none box-border-2 h-96"
+                  draggable={false}
+                  name="content"
+                  value={inputData.content}
+                  onChange={(e) => onChange(e)}
+                />
+              )}
             </div>
+            {editType === "edit" && (
+              <div className="mt-10">
+                <Button
+                  onClick={() => {
+                    onUpdate();
+                  }}
+                >
+                  수정하기
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </dialog>
