@@ -9,8 +9,11 @@ type ITodoFrom = {
   isEidt: boolean;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
+  setId: React.Dispatch<React.SetStateAction<string>>;
+
   editType: "edit" | "view" | "add";
   id: string;
+
   title: string;
   content: string;
 };
@@ -18,6 +21,7 @@ type ITodoFrom = {
 const TodoForm = ({
   isEidt,
   setEdit,
+  setId,
   id,
   title,
   content,
@@ -61,9 +65,10 @@ const TodoForm = ({
       const { title, content } = inputData;
       !(!title || !content) &&
         createTodo(inputData)
-          .then(() => {
+          .then((res) => {
             alert("성공적으로 추가되었습니다!");
             setEditType("view");
+            setId(res.id);
           })
           .catch((e) => {
             alert(e.response.data.details);

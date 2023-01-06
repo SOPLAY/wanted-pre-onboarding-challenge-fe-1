@@ -48,6 +48,7 @@ export const useTodo = () => {
       .createTodo(data)
       .then((res) => {
         getTodos();
+        return res.data.data as any;
       })
       .catch((e) => {
         alert(e.response.data.details);

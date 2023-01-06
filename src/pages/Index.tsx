@@ -56,6 +56,7 @@ const Index = () => {
           setEdit={setIsEdit}
           setEditType={setEditType}
           editType={editType}
+          setId={setCurrentId}
           {...todo.todos.filter((v) => v.id === currentId)[0]}
         />
       </div>
