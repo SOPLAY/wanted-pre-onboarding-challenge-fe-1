@@ -1,9 +1,7 @@
 import { ITodoItem, useTodo } from "@hooks/useTodo";
 import { useRef } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { MdDeleteOutline, MdEditNote, MdModeEditOutline } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
+import { useLocation } from "react-router-dom";
 
 type ITodoCard = ITodoItem & {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,37 +20,6 @@ const TodoCard = ({
   const targetId = path[path.length - 1];
 
   const cardRef = useRef<HTMLDivElement>(null);
-  const [addEventState, setAddEventState] = useState(false);
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const addCardClickEvent = () =>
-  //     cardRef.current?.addEventListener("click", (e) => {
-  //       const { clientX: X, clientY: Y } = e;
-  //       const deleteBoxRange = cardRef.current?.getElementsByTagName("span")[0];
-  //       if (deleteBoxRange && cardRef.current) {
-  //         const { offsetHeight, offsetTop, offsetLeft, offsetWidth } =
-  //           deleteBoxRange;
-  //         const addRange = 4;
-  //         if (
-  //           !(
-  //             X > offsetLeft - addRange &&
-  //             X < offsetLeft + offsetWidth + addRange &&
-  //             Y > offsetTop - addRange &&
-  //             Y < offsetTop + offsetHeight + addRange
-  //           )
-  //         ) {
-  //           onClickCard();
-  //         }
-  //       }
-  //     });
-
-  //   if (!addEventState) {
-  //     addCardClickEvent();
-  //     setAddEventState(true);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   const todo = useTodo();
 
@@ -62,8 +29,6 @@ const TodoCard = ({
     ${date.toLocaleString().slice(0, date.toLocaleString().length - 3)}`;
 
   const onClickCard = () => {
-    // navigate(`/todo/${id}`);
-    // console.log(id);
     setId(id);
     setEdit(true);
   };
