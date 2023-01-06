@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 type ITodoCard = ITodoItem & {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setId: React.Dispatch<React.SetStateAction<string>>;
+  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view">>;
 };
 const TodoCard = ({
   content,
@@ -14,6 +15,7 @@ const TodoCard = ({
   title,
   updatedAt,
   setEdit,
+  setEditType,
   setId,
 }: ITodoCard) => {
   const path = useLocation().pathname.split("/");
@@ -28,8 +30,9 @@ const TodoCard = ({
   const updateDate = `
     ${date.toLocaleString().slice(0, date.toLocaleString().length - 3)}`;
 
-  const onClickCard = () => {
+  const onClickCard = (isEdit?: boolean) => {
     setId(id);
+    !isEdit && setEditType("view");
     setEdit(true);
   };
 
