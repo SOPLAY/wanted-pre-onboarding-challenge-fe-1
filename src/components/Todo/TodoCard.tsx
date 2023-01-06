@@ -41,7 +41,7 @@ const TodoCard = ({
     >
       <div className="flex items-center justify-between cursor-pointer">
         <h3 onClick={() => onClickCard()} className={"flex-grow"}>
-          {title}
+          {title.slice(0, 17)}...
         </h3>
         <span className="flex">
           <MdModeEditOutline
