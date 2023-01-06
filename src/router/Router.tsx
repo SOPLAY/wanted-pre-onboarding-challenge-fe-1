@@ -36,12 +36,11 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<pages.Index />} />
         <Route path="auth">
           <Route path="signin" element={<pages.Auth.SignIn />} />
           <Route path="signup" element={<pages.Auth.SignUp />} />
         </Route>
-        <Route path="todo/:id" element={<pages.Todo.Details />} />
+        <Route index element={<pages.Index />} />
       </Route>
       <Route path="*" />
     </Routes>
