@@ -28,7 +28,16 @@ export const useTodo = () => {
   const [todos, setTodos] = useRecoilState<ITodoItem[]>(todosAtom);
 
   const getTodos = () => {
-    apis.todos.getTodos().then((res) => setTodos(res.data.data));
+    apis.todos
+      .getTodos()
+      .then((res) =>
+        setTodos(
+          res.data.data.sort(
+            (a: ITodoItem, b: ITodoItem) =>
+              new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+          )
+        )
+      );
   };
 
   const getTodosById = (id: string) =>
