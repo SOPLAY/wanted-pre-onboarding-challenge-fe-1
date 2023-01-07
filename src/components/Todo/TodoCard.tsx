@@ -6,11 +6,13 @@ type ITodoCard = ITodoItem & {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   setId: React.Dispatch<React.SetStateAction<string>>;
   setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
+  index: number;
 };
 const TodoCard = ({
   id,
   title,
   updatedAt,
+  index,
   setEdit,
   setEditType,
   setId,
@@ -35,6 +37,7 @@ const TodoCard = ({
     >
       <div className="flex items-center justify-between cursor-pointer">
         <h3 onClick={() => onClickCard()} className={"flex-grow"}>
+          <span className="text-base">{index}. </span>
           {title.length > 17 ? `${title.slice(0, 17)}...` : title}
         </h3>
         <span className="flex">

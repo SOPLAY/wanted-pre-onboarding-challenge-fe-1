@@ -31,7 +31,7 @@ const Form = ({ type }: IForm) => {
       return validate[target](value);
     };
     setUserInput({ ...userInput, [name]: value });
-    console.table(checkValue);
+
     name === "passwordCheck"
       ? setCheckValue({
           ...checkValue,
