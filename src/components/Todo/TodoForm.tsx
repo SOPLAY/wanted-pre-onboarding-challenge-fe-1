@@ -102,9 +102,11 @@ ITodoFrom) => {
               <Link to="/">
                 <MdClose className="duration-300 ease-in-out hover:rotate-90 hover:text-red-600 hover:scale-110" />
               </Link>
-              <div>
-                <p className="text-xs">{updateDate}에 수정됨</p>
-              </div>
+              {editType !== "add" && (
+                <div>
+                  <p className="text-xs">{updateDate}에 수정됨</p>
+                </div>
+              )}
               {editType === "view" ? (
                 <Link to={`/todo/edit?id=${id}`}>
                   <MdModeEditOutline className="text-2xl duration-300 ease-in-out hover:text-green-500 hover:scale-110 " />
