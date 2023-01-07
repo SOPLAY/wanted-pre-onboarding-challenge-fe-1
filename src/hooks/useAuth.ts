@@ -5,9 +5,13 @@ import axios from "axios";
 
 type IUserToken = { state: boolean; token: string };
 
-const initData = JSON.parse(
-  localStorage.getItem("userAuthData") || `{"state":false,"token":""}`
-) as IUserToken;
+const localUserToken: string = JSON.parse(
+  localStorage.getItem("userToken") || `""`
+);
+const initData: IUserToken = {
+  state: localUserToken !== "",
+  token: localUserToken,
+};
 
 export const atomAuthState = atom<IUserToken>({
   key: `authState${new Date()}`,
@@ -19,7 +23,7 @@ export const useAuth = () => {
   const [user, setUserAtom] = useRecoilState(atomAuthState);
 
   const setUser = (data: IUserToken) => {
-    localStorage.setItem("userAuthData", JSON.stringify(data));
+    localStorage.setItem("userToken", JSON.stringify(data.token));
     setUserAtom(data);
   };
 
@@ -37,6 +41,7 @@ export const useAuth = () => {
       })
       .catch((e) => {
         alert(e.response.data.details);
+        user.state && logOut();
       });
 
   const signUp = async (Inputdata: IAuthSignUp) =>
