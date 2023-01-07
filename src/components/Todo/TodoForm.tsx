@@ -63,16 +63,19 @@ const TodoForm = ({
         .catch((e) => alert(e.response.data.details));
     } else if (editType === "add") {
       const { title, content } = inputData;
-      !(!title || !content) &&
-        createTodo(inputData)
-          .then((res) => {
-            alert("성공적으로 추가되었습니다!");
-            setEditType("view");
-            setId(res.id);
-          })
-          .catch((e) => {
-            alert(e.response.data.details);
-          });
+      !(!title || !content)
+        ? createTodo(inputData)
+            .then((res) => {
+              alert("성공적으로 추가되었습니다!");
+              setEditType("view");
+              setId(res.id);
+            })
+            .catch((e) => {
+              alert(e.response.data.details);
+            })
+        : alert(
+            `${title === "" ? "제목" : "내용"}은 필수로 입력되어야 합니다.`
+          );
     }
   };
 

@@ -6,9 +6,11 @@ const Header = () => {
   return (
     <header className="border-b ">
       <div className="flex items-center justify-between h-12 px-5">
-        <p className="text-xl text-justify ">
-          <b>ToDo</b>
-        </p>
+        <Link to={"/"}>
+          <p className="text-xl text-justify ">
+            <b>ToDo</b>
+          </p>
+        </Link>
         <nav>
           <ul className="flex gap-2 text-sm">
             {auth.user.state ? (

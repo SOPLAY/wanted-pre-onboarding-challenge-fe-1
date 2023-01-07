@@ -41,6 +41,7 @@ const Index = () => {
                   <li key={index} className={"w-96"}>
                     <TodoCard
                       {...todoItem}
+                      title={`${index + 1}.${todoItem.title}`}
                       setEdit={setIsEdit}
                       setId={setCurrentId}
                       setEditType={setEditType}
