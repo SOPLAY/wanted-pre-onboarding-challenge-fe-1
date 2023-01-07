@@ -1,7 +1,7 @@
 import { ITodoItem, useTodo } from "@hooks/useTodo";
 import React, { useRef } from "react";
 import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type ITodoCard = ITodoItem & {
   index: number;
@@ -11,7 +11,9 @@ const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
   const todo = useTodo();
   const date = new Date(createdAt);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
+  const currentId = searchParams.get("id") as string;
   const updateDate = `
     ${date.toLocaleString().slice(0, date.toLocaleString().length - 3)}`;
 
@@ -23,7 +25,9 @@ const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
 
   return (
     <div
-      className={`z-10 w-full p-3 text-xl duration-300 ease-in-out  border-b hover:bg-green-100 `}
+      className={`z-10 w-full p-3 text-xl duration-300 ease-in-out  border-b hover:bg-green-100 ${
+        currentId === id && "bg-green-100"
+      }`}
       ref={cardRef}
     >
       <div className="flex items-center justify-between cursor-pointer">
@@ -34,7 +38,7 @@ const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
         <span className="flex">
           <MdModeEditOutline
             onClick={() => onClickCard(true)}
-            className={"mr-1 hover:scale-125 duration-300"}
+            className={"mr-1 hover:scale-125 duration-300 hover:text-green-500"}
           />
           <MdDeleteOutline
             onClick={() => todo.deleteTodo(id)}
