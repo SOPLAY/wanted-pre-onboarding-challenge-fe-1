@@ -37,7 +37,10 @@ export const useTodo = () => {
               new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           )
         )
-      );
+      )
+      .catch((e) => {
+        auth.logOut();
+      });
   };
 
   const getTodosById = (id: string) =>
