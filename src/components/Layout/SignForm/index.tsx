@@ -1,7 +1,7 @@
 import Button from "@components/common/Button";
 import Input from "@components/common/Input";
 import { useAuth } from "@hooks/useAuth";
-import { validate } from "@libs/validate";
+import { validate } from "@utils/validate";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 type IForm = {
