@@ -42,7 +42,7 @@
 
 <details>
 
-<summary>SignUp</summary>
+<summary>SignUp</summary>
 
 <br/>
 
