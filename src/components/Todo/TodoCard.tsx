@@ -1,33 +1,24 @@
 import { ITodoItem, useTodo } from "@hooks/useTodo";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 type ITodoCard = ITodoItem & {
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-  setId: React.Dispatch<React.SetStateAction<string>>;
-  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
   index: number;
 };
-const TodoCard = ({
-  id,
-  title,
-  updatedAt,
-  index,
-  setEdit,
-  setEditType,
-  setId,
-}: ITodoCard) => {
+const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const todo = useTodo();
-  const date = new Date(updatedAt);
+  const date = new Date(createdAt);
+  const navigate = useNavigate();
 
   const updateDate = `
     ${date.toLocaleString().slice(0, date.toLocaleString().length - 3)}`;
 
   const onClickCard = (isEdit?: boolean) => {
-    setId(id);
-    !isEdit ? setEditType("view") : setEditType("edit");
-    setEdit(true);
+    navigate(`/todo/${isEdit ? "edit" : "view"}?id=${id}`, {
+      relative: "path",
+    });
   };
 
   return (
@@ -55,10 +46,10 @@ const TodoCard = ({
         className="text-xs text-right cursor-pointer text-neutral-700"
         onClick={() => onClickCard()}
       >
-        {updateDate} 에 수정됨
+        {updateDate}에 생성됨
       </p>
     </div>
   );
 };
 
-export default TodoCard;
+export default React.memo(TodoCard);

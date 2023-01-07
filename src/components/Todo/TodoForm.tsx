@@ -1,55 +1,61 @@
 import Button from "@components/common/Button";
 import { useTodo } from "@hooks/useTodo";
-import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { MdArrowBack, MdClose, MdModeEditOutline } from "react-icons/md";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 
 type ITodoFrom = {
   isEidt: boolean;
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-  setEditType: React.Dispatch<React.SetStateAction<"edit" | "view" | "add">>;
-  setId: React.Dispatch<React.SetStateAction<string>>;
-
-  editType: "edit" | "view" | "add";
-  id: string;
-
-  title: string;
-  content: string;
 };
 
 const TodoForm = ({
   isEidt,
-  setEdit,
-  setId,
-  id,
-  title,
-  content,
-  editType,
-  setEditType,
-}: ITodoFrom) => {
+}: // editType,
+ITodoFrom) => {
+  const navigate = useNavigate();
+  console.log();
+  const location = useLocation();
+  const { type: editType } = useParams();
+
+  const [searchParams] = useSearchParams();
+
+  const id = searchParams.get("id") as string;
+
   const { updateTodo, createTodo, getTodosById } = useTodo();
+
   const onClose = () => {
-    isEidt && setEdit(false);
+    navigate("/");
   };
 
   const [inputData, setInputData] = useState({
-    title: title,
-    content: content,
+    title: "",
+    content: "",
+    updatedAt: "",
   });
+
+  const date = new Date(inputData.updatedAt);
+
+  const updateDate = `
+    ${date.toLocaleString().slice(0, date.toLocaleString().length - 3)}`;
 
   useEffect(() => {
     if (editType === "add") {
-      setInputData({ title: "", content: "" });
+      setInputData({ title: "", content: "", updatedAt: "" });
     } else {
       getTodosById(id).then((res) => {
         setInputData(res);
       });
     }
-    // setInputData({ title, content });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editType, isEidt]);
+  }, [location]);
 
   const onChange = (e: any) =>
     setInputData({ ...inputData, [e.target.name]: e.target.value });
@@ -58,7 +64,7 @@ const TodoForm = ({
     if (editType === "edit") {
       updateTodo(id, inputData)
         .then(() => {
-          setEditType("view");
+          navigate(`/todo/view?id=${id}`);
         })
         .catch((e) => alert(e.response.data.details));
     } else if (editType === "add") {
@@ -67,8 +73,7 @@ const TodoForm = ({
         ? createTodo(inputData)
             .then((res) => {
               alert("성공적으로 추가되었습니다!");
-              setEditType("view");
-              setId(res.id);
+              navigate(`/todo/view?id=${res.id}`);
             })
             .catch((e) => {
               alert(e.response.data.details);
@@ -82,41 +87,39 @@ const TodoForm = ({
   return (
     <div
       className={`
-      fixed top-0 left-0 w-screen h-screen  duration-300 ease-in-out 
+      fixed top-0 left-0 w-screen h-screen  ease-in-out 
       ${isEidt ? "backdrop-blur-[3px]" : "opacity-0 -z-10 "}
       `}
     >
       <dialog
         open={isEidt}
-        className={`bg-transparent h-full p-0 mr-0 shadow-md w-full duration-300 translate-x-96 animate-todoFadeIn bg-none  
-        ${isEidt && "translate-x-0 duration-300"}
-        `}
+        className={`bg-transparent h-full p-0 mr-0 shadow-md w-full bg-none `}
       >
         <div className="flex h-full ">
           <div className="flex-grow bg-none" onClick={() => onClose()} />
           <div className="p-5 overflow-auto bg-white shadow-md w-96">
             <div className="flex items-center justify-between text-3xl">
-              <MdClose
-                className="duration-300 ease-in-out hover:rotate-90 hover:text-red-600 hover:scale-110"
-                onClick={() => onClose()}
-              />
+              <Link to="/">
+                <MdClose className="duration-300 ease-in-out hover:rotate-90 hover:text-red-600 hover:scale-110" />
+              </Link>
+              <div>
+                <p className="text-xs">{updateDate}에 수정됨</p>
+              </div>
               {editType === "view" ? (
-                <MdModeEditOutline
-                  className="text-2xl duration-300 ease-in-out hover:text-green-500 hover:scale-110 "
-                  onClick={() => setEditType("edit")}
-                />
+                <Link to={`/todo/edit?id=${id}`}>
+                  <MdModeEditOutline className="text-2xl duration-300 ease-in-out hover:text-green-500 hover:scale-110 " />
+                </Link>
               ) : (
                 editType !== "add" && (
-                  <MdArrowBack
-                    className="text-3xl duration-300 ease-in-out hover:text-red-400 hover:scale-110 "
-                    onClick={() => setEditType("view")}
-                  />
+                  <Link to={`/todo/view?id=${id}`}>
+                    <MdArrowBack className="text-3xl duration-300 ease-in-out hover:text-red-400 hover:scale-110 " />
+                  </Link>
                 )
               )}
             </div>
             <div className="mt-5 text-xl font-bold">
               {editType === "view" ? (
-                <h1 className="">{title}</h1>
+                <h1 className="">{inputData.title}</h1>
               ) : (
                 <input
                   type="text"
@@ -129,7 +132,7 @@ const TodoForm = ({
             </div>
             <div className="mx-3 mt-5 text-gray-700 ">
               {editType === "view" ? (
-                <p className=" h-96">{content}</p>
+                <p className=" h-96">{inputData.content}</p>
               ) : (
                 <textarea
                   className="w-full border-2 resize-none box-border-2 h-96"

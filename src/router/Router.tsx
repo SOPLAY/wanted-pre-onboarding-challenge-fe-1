@@ -24,7 +24,9 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Auth auth element={<pages.Index />} />} />
+        <Route path="/" element={<Auth auth element={<pages.Index />} />}>
+          <Route path="/todo/:type" element={<pages.Todo.Type />} />
+        </Route>
         <Route path="auth">
           <Route
             path="signin"
