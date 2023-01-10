@@ -23,6 +23,10 @@ const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
     });
   };
 
+  const onDelete = () => {
+    if (window.confirm(`"${title}" 삭제하시겠습니까?`)) todo.deleteTodo(id);
+  };
+
   return (
     <div
       className={`z-10 w-full p-3 text-xl duration-300 ease-in-out  border-b hover:bg-green-100 ${
@@ -41,7 +45,7 @@ const TodoCard = ({ id, title, createdAt, updatedAt, index }: ITodoCard) => {
             className={"mr-1 hover:scale-125 duration-300 hover:text-green-500"}
           />
           <MdDeleteOutline
-            onClick={() => todo.deleteTodo(id)}
+            onClick={() => onDelete()}
             className="text-red-400 duration-300 hover:scale-125"
           />
         </span>
