@@ -15,7 +15,8 @@ const signUp = (body: IAuthSignUp): Promise<AxiosResponse<IResAuth>> =>
   axios.post(`${apiServerUrl}/users/create`, body);
 
 // api todos
-const getTodos = () => axios.get(`${apiServerUrl}/todos`);
+const getTodos = () =>
+  axios.get(`${apiServerUrl}/todos`).then((res) => res.data.data);
 const getTodosById = (id: string) => axios.get(`${apiServerUrl}/todos/${id}`);
 const createTodo = (body: ITodo) => axios.post(`${apiServerUrl}/todos`, body);
 const updateTodo = (id: string, body: ITodo) =>
