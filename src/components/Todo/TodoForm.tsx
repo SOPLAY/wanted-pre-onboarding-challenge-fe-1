@@ -1,5 +1,7 @@
 import Button from "@components/common/Button";
-import { useTodo } from "@hooks/useTodo";
+import useCreateTodo from "@hooks/todo/mutation/useCreateTodo";
+import useUpdateTodo from "@hooks/todo/mutation/useUpdateTodo";
+import useGetTodoByIdQuery from "@hooks/todo/queries/useGetTodoByIdQuery";
 import { useEffect } from "react";
 import { useState } from "react";
 import { MdArrowBack, MdClose, MdModeEditOutline } from "react-icons/md";
@@ -15,20 +17,17 @@ type ITodoFrom = {
   isEidt: boolean;
 };
 
-const TodoForm = ({
-  isEidt,
-}: // editType,
-ITodoFrom) => {
+const TodoForm = ({ isEidt }: ITodoFrom) => {
   const navigate = useNavigate();
-  console.log();
-  const location = useLocation();
-  const { type: editType } = useParams();
-
   const [searchParams] = useSearchParams();
-
   const id = searchParams.get("id") as string;
 
-  const { updateTodo, createTodo, getTodosById } = useTodo();
+  const { data: todo } = useGetTodoByIdQuery(id);
+  const { mutate: createTodo } = useCreateTodo();
+  const { mutate: updateTodo } = useUpdateTodo();
+
+  const location = useLocation();
+  const { type: editType } = useParams();
 
   const onClose = () => {
     navigate("/");
@@ -49,35 +48,31 @@ ITodoFrom) => {
     if (editType === "add") {
       setInputData({ title: "", content: "", updatedAt: "" });
     } else {
-      getTodosById(id).then((res) => {
-        setInputData(res);
-      });
+      todo && setInputData(todo);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, [location, todo]);
 
   const onChange = (e: any) =>
     setInputData({ ...inputData, [e.target.name]: e.target.value });
 
   const onClick = () => {
     if (editType === "edit") {
-      updateTodo(id, inputData)
-        .then(() => {
+      updateTodo(inputData, {
+        onSuccess: (res) => {
           navigate(`/todo/view?id=${id}`);
-        })
-        .catch((e) => alert(e.response.data.details));
+        },
+      });
     } else if (editType === "add") {
       const { title, content } = inputData;
       !(!title || !content)
-        ? createTodo(inputData)
-            .then((res) => {
+        ? createTodo(inputData, {
+            onSuccess: (res) => {
               alert("성공적으로 추가되었습니다!");
-              navigate(`/todo/view?id=${res.id}`);
-            })
-            .catch((e) => {
-              alert(e.response.data.details);
-            })
+              navigate(`/todo/view?id=${res.data.id}`);
+            },
+          })
         : alert(
             `${title === "" ? "제목" : "내용"}은 필수로 입력되어야 합니다.`
           );

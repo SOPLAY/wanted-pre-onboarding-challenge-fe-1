@@ -1,17 +1,9 @@
-import TodoCard from "@components/Todo/TodoCard";
-import { useTodo } from "@hooks/useTodo";
-import React, { useEffect } from "react";
+import TodoList from "@components/Todo/TodoList/TodoList";
+
 import { MdAdd } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 
 const Index = () => {
-  const todo = useTodo();
-
-  //초기 데이터 패칭 데이터 패칭
-  useEffect(() => {
-    todo.todos[1] || todo.getTodos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <>
       <div className="flex h-full">
@@ -26,18 +18,8 @@ const Index = () => {
               </Link>
             </div>
 
-            <div className="">
-              <ul className="grid justify-center gap-y-0 gap-x-6">
-                {todo.todos.map((todoItem, index) => (
-                  <li key={index} className={"w-96"}>
-                    <TodoCard
-                      {...todoItem}
-                      index={index + 1}
-                      title={`${todoItem.title}`}
-                    />
-                  </li>
-                ))}
-              </ul>
+            <div>
+              <TodoList />
             </div>
           </div>
         </div>
