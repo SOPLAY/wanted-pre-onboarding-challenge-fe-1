@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import apis, { IAuthLogin, IAuthSignUp } from "../apis/apis";
+import apis from "../apis/apis";
 import { atom, useRecoilState } from "recoil";
 import axios from "axios";
-
-type IUserToken = { state: boolean; token: string };
+import { AUTH_KEYS } from "@src/constant/auth";
+import { IAuthSignIn, IAuthSignUp, IUserToken } from "@src/types/auth";
 
 const localUserToken: string = JSON.parse(
-  localStorage.getItem("userToken") || `""`
+  localStorage.getItem(AUTH_KEYS.USER_KEY) || `""`
 );
 const initData: IUserToken = {
   state: localUserToken !== "",
@@ -23,12 +23,12 @@ export const useAuth = () => {
   const [user, setUserAtom] = useRecoilState(atomAuthState);
 
   const setUser = (data: IUserToken) => {
-    localStorage.setItem("userToken", JSON.stringify(data.token));
+    localStorage.setItem(AUTH_KEYS.USER_KEY, JSON.stringify(data.token));
     setUserAtom(data);
   };
 
   //외부 사용 가능 함수
-  const signIn = async (Inputdata: IAuthLogin) =>
+  const signIn = async (Inputdata: IAuthSignIn) =>
     await apis.auth
       .signIn(Inputdata)
       .then((res) => {
@@ -36,11 +36,10 @@ export const useAuth = () => {
           state: res.data.message === "성공적으로 로그인 했습니다",
           token: res.data.token,
         });
-        axios.defaults.headers.common["Authorization"] = res.data.token;
+        axios.defaults.headers.common[AUTH_KEYS.TOKEN_KEY] = res.data.token;
         navigate("/");
       })
       .catch((e) => {
-        alert(e.response.data.details);
         user.state && logOut();
       });
 
@@ -52,7 +51,7 @@ export const useAuth = () => {
           state: res.data.message === "계정이 성공적으로 생성되었습니다",
           token: res.data.token,
         });
-        axios.defaults.headers.common["Authorization"] = res.data.token;
+        axios.defaults.headers.common[AUTH_KEYS.TOKEN_KEY] = res.data.token;
         alert("회원가입에 성공했습니다.!!");
         navigate("/");
       })
@@ -66,7 +65,7 @@ export const useAuth = () => {
   };
 
   const setToken = () => {
-    axios.defaults.headers.common["Authorization"] = user.token;
+    axios.defaults.headers.common[AUTH_KEYS.TOKEN_KEY] = user.token;
   };
 
   return { user, signIn, signUp, logOut, setToken };
